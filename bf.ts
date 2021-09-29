@@ -1,5 +1,3 @@
-import { BufReader } from "https://deno.land/std/io/mod.ts";
-
 const Token = {
   Increment: "+",
   Decrement: "-",
@@ -71,19 +69,11 @@ export const bf = (code: string): string => {
   return decode;
 };
 
-const printMem = <T>(mem: T[]) => {
-  let buf = "";
-  for (const c of mem) {
-    buf += `[${c}]`;
-  }
-  console.log(buf);
-};
+// const printMem = <T>(mem: T[]):void => {
+//   let buf = "";
+//   for (const c of mem) {
+//     buf += `[${c}]`;
+//   }
+//   console.log(buf);
+// };
 
-const getChar = async () => {
-  const reader = new BufReader(Deno.stdin);
-  const readLineResult = await reader.readLine();
-  if (readLineResult == null) throw Error();
-  const input = new TextDecoder().decode(readLineResult.line);
-  const char = input[0];
-  return char.charCodeAt(0);
-};

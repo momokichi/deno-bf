@@ -1,4 +1,3 @@
-import { Stack } from "./stack.ts";
 import { BufReader } from "https://deno.land/std/io/mod.ts";
 
 const Token = {
@@ -14,15 +13,15 @@ const Token = {
 
 type Token = typeof Token[keyof typeof Token];
 
-export const bf = async (code: string): Promise<string> => {
+export const bf = (code: string): string => {
   let p = 0, i = 0;
-  const memSize = 5096;
+  const memSize = 10;
   const mem: number[] = Array(memSize).fill(0);
-  const st = new Stack<number>();
   let decode = "";
 
 
-  for (const c of code) {
+  while(i < code.length) {
+    const c = code[i]
     switch (c) {
       case Token.Increment:
         mem[p]++;
@@ -37,44 +36,50 @@ export const bf = async (code: string): Promise<string> => {
         p--;
         break;
       case Token.LoopStart:
-        console.log('loop start')
-        st.push(i);
         if (mem[p] == 0) {
-          console.log('mem[p] == 0')
           let depth = 1;
           while (depth > 0) {
             i++;
-            if (i >= code.length) throw Error("Error: cannot found token `]`");
-            console.log(code[i])
-            if (code[i] == Token.LoopStart){ depth++; console.log('depth++')}
-            if (code[i] == Token.LoopEnd){ depth--; console.log('depth--')}
+            if (code[i] == Token.LoopStart) depth++;
+            if (code[i] == Token.LoopEnd) depth--;
           }
-          st.pop();
         }
         break;
       case Token.LoopEnd:
-        console.log('loop end')
-        if (st.empty()) {
-          throw Error("Error: cannot found token `[`");
-        }
-        i = st.top - 1;
-        st.pop()
+        if (mem[p] != 0) {
+          let depth = 1
+          while(depth > 0){
+            i--;
+            if(code[i] == Token.LoopEnd) depth++;
+            if(code[i] == Token.LoopStart) depth--;
+          }
+        }        
         break;
       case Token.Input:
-        mem[p] = await getChar();
+        // mem[p] = await getChar();
         break;
       case Token.Output:
-        console.log(mem[p])
         decode += String.fromCodePoint(mem[p]);
-        console.log(decode)
         break;
       default:
+        // comment
         break;
     }
     i++;
+    // printMem(mem)
   }
+  console.log(decode)
   return decode;
 };
+
+
+const printMem = <T> (mem: T[]) => {
+  let buf  = ""
+  for(const c of mem){
+    buf+= `[${c}]`
+  }
+  console.log(buf)
+}
 
 const getChar = async () => {
   const reader = new BufReader(Deno.stdin);

@@ -7,9 +7,9 @@ Deno.test("test", () => {
   assertEquals(x, 3);
 });
 
-Deno.test("Hello World! #1", async () => {
-  const actual = await bf(
-    ">+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.[-]>++++++++[<++++>-]<.>+++++++++++[<+++++>-]<.>++++++++[<+++>-]<.+++.------.--------.[-]>++++++++[<++++>-]<+.[-]++++++++++.",
+Deno.test("Hello World! #1", () => {
+  const actual = bf(
+    ">+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.[-]>++++++++[<++++>-]<.>+++++++++++[<+++++>-]<.>++++++++[<+++>-]<.+++.------.--------.[-]>++++++++[<++++>-]<+.",
   );
   assertEquals(
     actual,
@@ -17,18 +17,18 @@ Deno.test("Hello World! #1", async () => {
   );
 });
 
-Deno.test("Hello,world! #2", async () => {
-  const actual = await bf(
+Deno.test("Hello,world! #2", () => {
+  const actual = bf(
     "+++++++++[->++++++++>+++++++++++>+++++<<<]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.",
   );
   assertEquals(
     actual,
-    "Hello,world!",
+    "Hello, world!",
   );
 });
 
-Deno.test("print 'h'", async () => {
-  const actual = await bf(
+Deno.test("print 'h'", () => {
+  const actual = bf(
     "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.",
   );
   assertEquals(
@@ -37,8 +37,8 @@ Deno.test("print 'h'", async () => {
   );
 });
 
-Deno.test("print 'hoge'", async () => {
-  const actual = await bf(
+Deno.test("print 'hoge'", () => {
+  const actual = bf(
     "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++.--------.--.",
   );
   assertEquals(

@@ -19,9 +19,8 @@ export const bf = (code: string): string => {
   const mem: number[] = Array(memSize).fill(0);
   let decode = "";
 
-
-  while(i < code.length) {
-    const c = code[i]
+  while (i < code.length) {
+    const c = code[i];
     switch (c) {
       case Token.Increment:
         mem[p]++;
@@ -47,13 +46,13 @@ export const bf = (code: string): string => {
         break;
       case Token.LoopEnd:
         if (mem[p] != 0) {
-          let depth = 1
-          while(depth > 0){
+          let depth = 1;
+          while (depth > 0) {
             i--;
-            if(code[i] == Token.LoopEnd) depth++;
-            if(code[i] == Token.LoopStart) depth--;
+            if (code[i] == Token.LoopEnd) depth++;
+            if (code[i] == Token.LoopStart) depth--;
           }
-        }        
+        }
         break;
       case Token.Input:
         // mem[p] = await getChar();
@@ -68,18 +67,17 @@ export const bf = (code: string): string => {
     i++;
     // printMem(mem)
   }
-  console.log(decode)
+  console.log(decode);
   return decode;
 };
 
-
-const printMem = <T> (mem: T[]) => {
-  let buf  = ""
-  for(const c of mem){
-    buf+= `[${c}]`
+const printMem = <T>(mem: T[]) => {
+  let buf = "";
+  for (const c of mem) {
+    buf += `[${c}]`;
   }
-  console.log(buf)
-}
+  console.log(buf);
+};
 
 const getChar = async () => {
   const reader = new BufReader(Deno.stdin);

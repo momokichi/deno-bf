@@ -69,6 +69,19 @@ export const bf = (code: string): string => {
   return decode;
 };
 
+export const repl = async () => {
+  const prompt = ">>> ";
+  console.log("Brainfxxk repl.");
+
+  while (true) {
+    const buf = new Uint8Array(1024);
+    await Deno.stdout.write(new TextEncoder().encode(prompt));
+    const n = await Deno.stdin.read(buf);
+    const line = new TextDecoder().decode(buf.subarray(0, n as number));
+    bf(line);
+  }
+};
+
 // const printMem = <T>(mem: T[]):void => {
 //   let buf = "";
 //   for (const c of mem) {

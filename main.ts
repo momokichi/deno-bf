@@ -1,15 +1,15 @@
 import { Command } from "https://deno.land/x/cliffy@v0.19.6/command/mod.ts";
-import { repl } from "./bf.ts";
+import { exec, repl } from "./bf.ts";
 
 const { options, args } = await new Command()
-  .name("cliffy sample command")
+  .name("brainfxxk")
   .version("0.1.0")
   .description("Command line arguments parser")
-  .option("-a, --all", "show all.")
+  .option("-f, --file", "read from file.")
   .arguments("[arg]")
   .parse(Deno.args);
 
-console.log({ args });
-console.log({ options });
+const { file } = options;
 
-repl();
+if (file) exec(args[0]);
+else repl();

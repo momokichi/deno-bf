@@ -65,7 +65,6 @@ export const bf = (code: string): string => {
     i++;
     // printMem(mem)
   }
-  console.log(decode);
   return decode;
 };
 
@@ -78,8 +77,16 @@ export const repl = async () => {
     await Deno.stdout.write(new TextEncoder().encode(prompt));
     const n = await Deno.stdin.read(buf);
     const line = new TextDecoder().decode(buf.subarray(0, n as number));
-    bf(line);
+    console.log(bf(line));
   }
+};
+
+export const exec = async (fileName: string) => {
+  const file = await Deno.open(fileName);
+  const buf = new Uint8Array(1024);
+  const n = await Deno.read(file.rid, buf);
+  const input = new TextDecoder().decode(buf);
+  console.log(bf(input));
 };
 
 // const printMem = <T>(mem: T[]):void => {

@@ -11,9 +11,10 @@ const Token = {
 
 type Token = typeof Token[keyof typeof Token];
 
-export const bf = (code: string): string => {
-  let p = 0, i = 0;
-  const memSize = 10;
+const memSize = 1024;
+
+export const bf = (code: string, print = false): string => {
+  let p = 0, i = 0, maxPointer = 0;
   const mem: number[] = Array(memSize).fill(0);
   let decode = "";
 
@@ -34,65 +35,67 @@ export const bf = (code: string): string => {
         break;
       case Token.LoopStart:
         if (mem[p] == 0) {
-          let depth = 1;
-          while (depth > 0) {
+          let count = 1;
+          while (count > 0) {
             i++;
-            if (code[i] == Token.LoopStart) depth++;
-            if (code[i] == Token.LoopEnd) depth--;
+            if (code[i] == Token.LoopStart) count++;
+            if (code[i] == Token.LoopEnd) count--;
           }
         }
         break;
       case Token.LoopEnd:
         if (mem[p] != 0) {
-          let depth = 1;
-          while (depth > 0) {
+          let count = 1;
+          while (count > 0) {
             i--;
-            if (code[i] == Token.LoopEnd) depth++;
-            if (code[i] == Token.LoopStart) depth--;
+            if (code[i] == Token.LoopEnd) count++;
+            if (code[i] == Token.LoopStart) count--;
           }
         }
         break;
       case Token.Input:
-        // mem[p] = await getChar();
+        // to be implemented
         break;
       case Token.Output:
         decode += String.fromCodePoint(mem[p]);
         break;
       default:
-        // comment
+        // ignore as a comment
         break;
     }
     i++;
-    // printMem(mem)
+    maxPointer = Math.max(maxPointer, p);
   }
+  if (print) printMem(mem.slice(0, maxPointer + 1));
   return decode;
 };
 
-export const repl = async () => {
-  const prompt = ">>> ";
+export const repl = async (print: boolean) => {
+  const prompt = "🧠 ";
   console.log("Brainfxxk repl.");
 
   while (true) {
-    const buf = new Uint8Array(1024);
+    const buf = new Uint8Array(memSize);
     await Deno.stdout.write(new TextEncoder().encode(prompt));
     const n = await Deno.stdin.read(buf);
     const line = new TextDecoder().decode(buf.subarray(0, n as number));
-    console.log(bf(line));
+    console.log(bf(line, print));
   }
 };
 
-export const exec = async (fileName: string) => {
+export const exec = async (fileName: string, print: boolean) => {
   const file = await Deno.open(fileName);
-  const buf = new Uint8Array(1024);
+  const buf = new Uint8Array(memSize);
+  // deno-lint-ignore no-unused-vars
   const n = await Deno.read(file.rid, buf);
   const input = new TextDecoder().decode(buf);
-  console.log(bf(input));
+  console.log(bf(input, print));
 };
 
-// const printMem = <T>(mem: T[]):void => {
-//   let buf = "";
-//   for (const c of mem) {
-//     buf += `[${c}]`;
-//   }
-//   console.log(buf);
-// };
+const printMem = <T>(mem: T[]): void => {
+  let buf = "";
+  for (const c of mem) {
+    buf += `[${c}]`;
+  }
+  console.log(`mem state: ${buf}`);
+};
